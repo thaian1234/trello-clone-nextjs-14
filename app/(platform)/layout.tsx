@@ -1,9 +1,19 @@
+import ReactQueryProvider from "@/providers/react-query-provider";
 import { ClerkProvider } from "@clerk/nextjs";
+
+import { Toaster } from "sonner";
 
 export default function PlatformLayout({
 	children,
-}: Readonly<{
+}: {
 	children: React.ReactNode;
-}>) {
-	return <ClerkProvider>{children}</ClerkProvider>;
+}) {
+	return (
+		<ClerkProvider>
+			<ReactQueryProvider>
+				<Toaster />
+				{children}
+			</ReactQueryProvider>
+		</ClerkProvider>
+	);
 }

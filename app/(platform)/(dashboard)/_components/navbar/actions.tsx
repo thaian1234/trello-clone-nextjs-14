@@ -1,40 +1,45 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { OrganizationSwitcher, UserButton, currentUser } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
+import {
+	ClerkLoaded,
+	ClerkLoading,
+	OrganizationSwitcher,
+	UserButton,
+} from "@clerk/nextjs";
 
-export async function Actions() {
-	const user = await currentUser();
-
-	if (!user) return redirect("/sign-in");
-
+export function Actions() {
 	return (
 		<>
-			<OrganizationSwitcher
-				hidePersonal
-				afterCreateOrganizationUrl="/organization/:id"
-				afterSelectOrganizationUrl="/organization/:id"
-				afterLeaveOrganizationUrl="/select-org"
-				appearance={{
-					elements: {
-						rootBox: {
-							display: "flex",
-							justifyContent: "center",
-							alignItems: "center",
+			<ClerkLoading>
+				<ActionsSkeleton />
+			</ClerkLoading>
+			<ClerkLoaded>
+				<OrganizationSwitcher
+					hidePersonal
+					afterCreateOrganizationUrl="/organization/:id"
+					afterSelectOrganizationUrl="/organization/:id"
+					afterLeaveOrganizationUrl="/select-org"
+					appearance={{
+						elements: {
+							rootBox: {
+								display: "flex",
+								justifyContent: "center",
+								alignItems: "center",
+							},
 						},
-					},
-				}}
-			/>
-			<UserButton
-				afterSignOutUrl="/"
-				appearance={{
-					elements: {
-						avatarBox: {
-							height: 35,
-							width: 35,
+					}}
+				/>
+				<UserButton
+					afterSignOutUrl="/"
+					appearance={{
+						elements: {
+							avatarBox: {
+								height: 35,
+								width: 35,
+							},
 						},
-					},
-				}}
-			/>
+					}}
+				/>
+			</ClerkLoaded>
 		</>
 	);
 }

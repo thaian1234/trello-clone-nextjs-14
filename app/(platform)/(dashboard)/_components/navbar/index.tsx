@@ -6,6 +6,7 @@ import { Actions, ActionsSkeleton } from "./actions";
 import { MobileSidebar } from "../sidebar/mobile-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Suspense } from "react";
+import { FormPopover } from "@/components/form-popover";
 
 export function Navbar() {
 	return (
@@ -15,26 +16,29 @@ export function Navbar() {
 				<div className="hidden md:flex">
 					<Logo />
 				</div>
-				<Button
-					variant="primary"
-					size="sm"
-					className="rounded-sm hidden md:block h-auto py-1.5 px-2"
-				>
-					Create
-				</Button>
-				<Button
-					variant="primary"
-					size="sm"
-					className="rounded-sm block md:hidden"
-				>
-					<Plus className="size-4" />
-				</Button>
+				<FormPopover align="start" side="bottom" sideOffset={18}>
+					<Button
+						variant="primary"
+						size="sm"
+						className="rounded-sm hidden md:block h-auto py-1.5 px-2"
+					>
+						Create
+					</Button>
+				</FormPopover>
+
+				<FormPopover>
+					<Button
+						variant="primary"
+						size="sm"
+						className="rounded-sm block md:hidden"
+					>
+						<Plus className="size-4" />
+					</Button>
+				</FormPopover>
 			</div>
 
 			<div className="ml-auto flex items-center gap-x-2">
-				<Suspense fallback={<ActionsSkeleton />}>
-					<Actions />
-				</Suspense>
+				<Actions />
 			</div>
 		</nav>
 	);

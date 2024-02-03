@@ -1,13 +1,15 @@
 import { db } from "./db";
 
 import { auth } from "@clerk/nextjs";
-import { listFormInput } from "@/actions/list/schema";
+import { listFormInput, listFormSchema } from "@/actions/list/schema";
 
 export const createList = async (data: listFormInput) => {
 	const { orgId, userId } = auth();
 
 	if (!orgId || !userId) throw new Error("Unauthorized");
-	if (!data) throw new Error("Missing some field");
+
+	if (!listFormSchema.safeParse(data).success)
+		throw new Error("Missing some fields");
 
 	const board = await db.board.findUnique({
 		where: {

@@ -50,15 +50,15 @@ export function ListForm() {
 		}
 	};
 
-	const onSubmit = handleSubmit((values) => {
+	const onSubmit = handleSubmit((data) => {
 		startTransition(() => {
-			onCreateList(values)
+			onCreateList(data)
 				.then(() => {
-					toast.success(`List "${values.title}" created`);
+					toast.success(`List "${data.title}" created`);
 					reset();
 					disableEditing();
 				})
-				.catch((error) => {
+				.catch((error: Error) => {
 					toast.error(error.message);
 				});
 		});

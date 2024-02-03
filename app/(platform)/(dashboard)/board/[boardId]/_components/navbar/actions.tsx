@@ -57,7 +57,7 @@ export function Actions({ id }: ActionsProps) {
 					variant="ghost"
 					disabled={isPending}
 					onClick={handleDeleteBoard}
-					className="rounded-none w-full h-auto p-2 px-5 justify-start font-normal text-sm"
+					className="rounded-none w-full h-auto p-2 px-5 justify-start font-normal text-sm text-rose-500 hover:text-rose-500"
 				>
 					Delete this board
 				</Button>

@@ -2,7 +2,6 @@
 
 import { createBoard, deleteBoard, updateBoard } from "@/lib/board-service";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 export const onCreateBoard = async (title: string, image: string) => {
 	try {

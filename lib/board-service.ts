@@ -1,5 +1,4 @@
 import { db } from "@/lib/db";
-import { getSelf } from "./auth-service";
 import { auth } from "@clerk/nextjs";
 
 export const createBoard = async (title: string, image: string) => {

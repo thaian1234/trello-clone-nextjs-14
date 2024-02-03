@@ -6,6 +6,7 @@ import { auth } from "@clerk/nextjs";
 import { HelpCircle, User2 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { BoardItem } from "./board-item";
 
 export async function BoardList() {
 	const { orgId } = auth();
@@ -29,19 +30,7 @@ export async function BoardList() {
 			</div>
 			<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
 				{boards.map((board) => (
-					<Link
-						key={board.id}
-						href={`/board/${board.id}`}
-						style={{
-							backgroundImage: `url(${board.imageThumbUrl})`,
-						}}
-						className="group relative aspect-video bg-no-repeat bg-center bg-cover bg-sky-700 rounded-sm size-full p-2 overflow-hidden"
-					>
-						<div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
-						<p className="relative font-semibold text-white">
-							{board.title}
-						</p>
-					</Link>
+					<BoardItem board={board} key={board.id} />
 				))}
 				<FormPopover sideOffset={10} side="right">
 					<div

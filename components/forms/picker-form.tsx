@@ -3,12 +3,13 @@
 import { getUnplashImages } from "@/lib/unplash-service";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { Check, Loader2 } from "lucide-react";
+import { Check } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { defaultImages } from "@/constant/images";
 import Link from "next/link";
 import { Loader } from "../ui/loader";
+import { useFormContext } from "react-hook-form";
 
 interface PickerFormProps {
 	id: string;

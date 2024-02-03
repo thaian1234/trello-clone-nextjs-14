@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
+import { BoardNavbar } from "./_components/navbar";
 
 const getBoardById = cache(async (boardId: string, orgId: string) => {
 	return await db.board.findUnique({
@@ -56,6 +57,8 @@ export default async function BoardIdLayout({
 			className="relative h-full bg-no-repeat bg-cover bg-center"
 			style={{ backgroundImage: `url(${board.imageFullUrl})` }}
 		>
+			<BoardNavbar board={board} />
+			<div className="absolute inset-0 bg-black/10" />
 			<main className="relative pt-28 h-full">{children}</main>
 		</div>
 	);

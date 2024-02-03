@@ -32,16 +32,42 @@ export const createBoard = async (title: string, image: string) => {
 		},
 	});
 
+	if (!board) throw new Error("Interal Error");
+
+	return board;
+};
+
+export const updateBoard = async (id: string, title: string) => {
+	const { userId, orgId } = auth();
+
+	if (!userId || !orgId) throw new Error("Unauthorized");
+
+	const board = await db.board.update({
+		where: {
+			id,
+			orgId,
+		},
+		data: { title },
+	});
+
+	if (!board) throw new Error("Failed to update");
+
 	return board;
 };
 
 export const deleteBoard = async (id: string) => {
-	const self = await getSelf();
-	if (!self) throw new Error("Unauthorized");
+	const { userId, orgId } = auth();
 
-	return await db.board.findUnique({
+	if (!userId || !orgId) throw new Error("Unauthorized");
+
+	const deletedBoard = await db.board.delete({
 		where: {
 			id,
+			orgId,
 		},
 	});
+
+	if (!deletedBoard) throw new Error("Failed to delete");
+
+	return deletedBoard;
 };

@@ -71,7 +71,7 @@ export function CreateBoardForm({ closeRef }: CreateBoardFormProps) {
 				<FormField
 					control={form.control}
 					name="image"
-					render={({ field }) => (
+					render={({ field: { onChange, value } }) => (
 						<FormItem>
 							<FormControl>
 								<PickerForm

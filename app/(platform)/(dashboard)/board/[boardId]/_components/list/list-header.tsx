@@ -18,9 +18,10 @@ import { Actions } from "./actions";
 
 interface ListHeaderProps {
 	data: List;
+	onAddCard: () => void;
 }
 
-export function ListHeader({ data }: ListHeaderProps) {
+export function ListHeader({ data, onAddCard }: ListHeaderProps) {
 	const params = useParams();
 	const [isEditing, setIsEditing] = useState(false);
 	const [isPending, startTransition] = useTransition();
@@ -114,7 +115,7 @@ export function ListHeader({ data }: ListHeaderProps) {
 					{title}
 				</div>
 			)}
-			<Actions data={data} onAddCard={() => {}} />
+			<Actions data={data} onAddCard={onAddCard} />
 		</div>
 	);
 }

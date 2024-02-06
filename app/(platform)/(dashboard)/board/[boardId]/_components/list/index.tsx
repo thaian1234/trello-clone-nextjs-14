@@ -23,16 +23,12 @@ interface ListContainerProps {
 
 export function ListContainer({ data, boardId }: ListContainerProps) {
 	const [orderedData, setOrderedData] = useState(data);
-	const [isUpdatingListOrder, startUpdateListOrderTransition] =
-		useTransition();
-	const [isUpdatingCardOrder, startUpdateCardOrderTransition] =
-		useTransition();
+	const [_, startTransition] = useTransition();
 
 	function reorder<T>(list: T[], startIndex: number, endIndex: number) {
 		const result = Array.from(list);
 		const [removed] = result.splice(startIndex, 1);
 		result.splice(endIndex, 0, removed);
-
 		return result;
 	}
 
@@ -40,37 +36,39 @@ export function ListContainer({ data, boardId }: ListContainerProps) {
 		setOrderedData(data);
 	}, [data]);
 
+	// const onSetData = () => {
+	// 	setOrderedData(data);
+	// };
+
 	const handleUpdateListOrder = (data: UpdateListOrderInputs) => {
-		startUpdateListOrderTransition(() => {
-			onUpdateListOrder(data)
-				.then(() => {
-					toast.success("List reordered");
-				})
-				.catch((error: Error) => {
-					toast.error(error.message);
-				});
+		if (!data) return;
+
+		startTransition(() => {
+			onUpdateListOrder(data).catch((error: Error) => {
+				toast.error(error.message);
+			});
 		});
 	};
+
 	const handleUpdateCardOrder = (data: UpdateCardOrderInputs) => {
-		startUpdateListOrderTransition(() => {
-			onUpdateCardOrder(data)
-				.then(() => {
-					toast.success("Card reordered");
-				})
-				.catch((error: Error) => {
-					toast.error(error.message);
-				});
+		if (!data) return;
+
+		startTransition(() => {
+			onUpdateCardOrder(data).catch((error: Error) => {
+				toast.error(error.message);
+			});
 		});
 	};
 
 	const onDragEnd: OnDragEndResponder = (result) => {
 		const { destination, source, type } = result;
 
+		if (!destination) return;
+
 		// If dropped in the same position
 		if (
-			!destination ||
-			(destination.droppableId === source.droppableId &&
-				destination.index === source.index)
+			destination.droppableId === source.droppableId &&
+			destination.index === source.index
 		) {
 			return;
 		}
@@ -125,9 +123,8 @@ export function ListContainer({ data, boardId }: ListContainerProps) {
 				});
 
 				sourceList.cards = reorderedCards;
-				setOrderedData(newOrderedData);
 
-				//TODO: Trigger server actions
+				setOrderedData(newOrderedData);
 				handleUpdateCardOrder({ items: reorderedCards, boardId });
 
 				//User moves the card to another list
@@ -145,13 +142,12 @@ export function ListContainer({ data, boardId }: ListContainerProps) {
 					card.order = idx;
 				});
 
-				//Update the order for reach card in the destination list
+				//Update the order for each card in the destination list
 				destList.cards.forEach((card, idx) => {
 					card.order = idx;
 				});
 
 				setOrderedData(newOrderedData);
-				//TODO: trigger server actions
 				handleUpdateCardOrder({ items: destList.cards, boardId });
 			}
 		}

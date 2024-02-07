@@ -1,5 +1,5 @@
-import { createCardSchema } from "@/actions/card/schema";
-import { CreateCardInputs } from "@/actions/card/type";
+import { createCardSchema, updateCardSchema } from "@/actions/card/schema";
+import { CreateCardInputs, UpdateCardInputs } from "@/actions/card/type";
 import { auth } from "@clerk/nextjs";
 import { db } from "./db";
 
@@ -41,6 +41,33 @@ export const createCard = async (data: CreateCardInputs) => {
 	});
 
 	if (!card) throw new Error("Failed to create card");
+
+	return card;
+};
+
+export const updateCard = async (data: UpdateCardInputs) => {
+	const { orgId, userId } = auth();
+
+	if (!orgId || !userId) throw new Error("Unauthorized");
+	if (!updateCardSchema.safeParse(data).success)
+		throw new Error("Missing some field");
+
+	const { id, boardId, ...values } = data;
+	const card = await db.card.update({
+		where: {
+			id,
+			list: {
+				board: {
+					orgId,
+				},
+			},
+		},
+		data: {
+			...values,
+		},
+	});
+
+	if (!card) throw new Error("Failed to update card");
 
 	return card;
 };

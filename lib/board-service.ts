@@ -1,5 +1,7 @@
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
+import { createAuditLog } from "./audit-log-service";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 export const createBoard = async (title: string, image: string) => {
 	const { userId, orgId } = auth();
@@ -33,6 +35,15 @@ export const createBoard = async (title: string, image: string) => {
 
 	if (!board) throw new Error("Interal Error");
 
+	const auditLog = await createAuditLog({
+		entityId: board.id,
+		entityTitle: board.title,
+		entityType: ENTITY_TYPE.BOARD,
+		action: ACTION.CREATE,
+	});
+
+	if (!auditLog) throw new Error("Failed to audit action");
+
 	return board;
 };
 
@@ -51,6 +62,15 @@ export const updateBoard = async (id: string, title: string) => {
 
 	if (!board) throw new Error("Failed to update");
 
+	const auditLog = await createAuditLog({
+		entityId: board.id,
+		entityTitle: board.title,
+		entityType: ENTITY_TYPE.BOARD,
+		action: ACTION.UPDATE,
+	});
+
+	if (!auditLog) throw new Error("Failed to audit action");
+
 	return board;
 };
 
@@ -67,6 +87,15 @@ export const deleteBoard = async (id: string) => {
 	});
 
 	if (!deletedBoard) throw new Error("Failed to delete");
+
+	const auditLog = await createAuditLog({
+		entityId: deletedBoard.id,
+		entityTitle: deletedBoard.title,
+		entityType: ENTITY_TYPE.BOARD,
+		action: ACTION.DELETE,
+	});
+
+	if (!auditLog) throw new Error("Failed to audit action");
 
 	return deletedBoard;
 };

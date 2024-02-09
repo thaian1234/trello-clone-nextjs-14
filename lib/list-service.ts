@@ -11,6 +11,8 @@ import {
 	listFormUpdateInput,
 	listFormUpdateSchema,
 } from "@/actions/list/schema";
+import { createAuditLog } from "./audit-log-service";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 export const createList = async (data: listFormInput) => {
 	const { orgId, userId } = auth();
@@ -48,6 +50,15 @@ export const createList = async (data: listFormInput) => {
 
 	if (!createdList) throw new Error("Failed to create list");
 
+	const auditLog = await createAuditLog({
+		entityId: createdList.id,
+		entityTitle: createdList.title,
+		entityType: ENTITY_TYPE.LIST,
+		action: ACTION.CREATE,
+	});
+
+	if (!auditLog) throw new Error("Failed to audit action");
+
 	return createdList;
 };
 
@@ -74,6 +85,15 @@ export const updateList = async (data: listFormUpdateInput) => {
 
 	if (!updatedList) throw new Error("Failed to update list");
 
+	const auditLog = await createAuditLog({
+		entityId: updatedList.id,
+		entityTitle: updatedList.title,
+		entityType: ENTITY_TYPE.LIST,
+		action: ACTION.UPDATE,
+	});
+
+	if (!auditLog) throw new Error("Failed to audit action");
+
 	return updatedList;
 };
 
@@ -96,6 +116,16 @@ export const deleteList = async (data: listFormDeleteInput) => {
 	});
 
 	if (!deletedList) throw new Error("Failed to delete list");
+
+	const auditLog = await createAuditLog({
+		entityId: deletedList.id,
+		entityTitle: deletedList.title,
+		entityType: ENTITY_TYPE.LIST,
+		action: ACTION.DELETE,
+	});
+
+	if (!auditLog) throw new Error("Failed to audit action");
+
 
 	return deletedList;
 };
@@ -154,6 +184,15 @@ export const copyList = async (data: listFormCopyInput) => {
 	});
 
 	if (!copiedList) throw new Error("Failed to copy list");
+
+	const auditLog = await createAuditLog({
+		entityId: copiedList.id,
+		entityTitle: copiedList.title,
+		entityType: ENTITY_TYPE.LIST,
+		action: ACTION.CREATE,
+	});
+
+	if (!auditLog) throw new Error("Failed to audit action");
 
 	return copiedList;
 };

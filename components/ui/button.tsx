@@ -22,12 +22,14 @@ const buttonVariants = cva(
 				primary:
 					"bg-gradient-to-r from-fuchsia-600 to-pink-600 text-primary-foreground hover:from-fuchsia-400/90 hover:to-pink-500/90",
 				transparent: "bg-transparent text-white hover:bg-white/20",
+				gray: "bg-neutral-200 text-secondary-foreground hover:bg-neutral-300",
 			},
 			size: {
 				default: "h-10 px-4 py-2",
 				sm: "h-9 rounded-md px-3",
 				lg: "h-11 rounded-md px-8",
 				icon: "h-10 w-10",
+				inline: "h-auto px-2 py-1.5 text-sm",
 			},
 		},
 		defaultVariants: {

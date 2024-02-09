@@ -36,10 +36,6 @@ export function ListContainer({ data, boardId }: ListContainerProps) {
 		setOrderedData(data);
 	}, [data]);
 
-	// const onSetData = () => {
-	// 	setOrderedData(data);
-	// };
-
 	const handleUpdateListOrder = (data: UpdateListOrderInputs) => {
 		if (!data) return;
 
@@ -54,9 +50,13 @@ export function ListContainer({ data, boardId }: ListContainerProps) {
 		if (!data) return;
 
 		startTransition(() => {
-			onUpdateCardOrder(data).catch((error: Error) => {
-				toast.error(error.message);
-			});
+			onUpdateCardOrder(data)
+				.then(() => {
+					toast.success("success");
+				})
+				.catch((error: Error) => {
+					toast.error(error.message);
+				});
 		});
 	};
 

@@ -36,3 +36,13 @@ export const updateCardSchema = z.object({
 			.min(3, { message: "Description is too short" })
 	),
 });
+
+export const copyCardSchema = z.object({
+	id: z.string().trim(),
+	boardId: z.string().trim(),
+});
+
+export const deleteCardSchema = z.object({
+	id: z.string().trim(),
+	boardId: z.string().trim(),
+});

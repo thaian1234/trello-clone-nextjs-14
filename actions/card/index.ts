@@ -1,7 +1,17 @@
 "use server";
 
-import { createCard, updateCard } from "@/lib/card-service";
-import { CreateCardInputs, UpdateCardInputs } from "./type";
+import {
+	copyCard,
+	createCard,
+	deleteCard,
+	updateCard,
+} from "@/lib/card-service";
+import {
+	CopyCardInputs,
+	CreateCardInputs,
+	DeleteCardInputs,
+	UpdateCardInputs,
+} from "./type";
 import { revalidatePath } from "next/cache";
 
 export const onCreateCard = async (data: CreateCardInputs) => {
@@ -23,6 +33,30 @@ export const onUpdateCard = async (data: UpdateCardInputs) => {
 		if (updatedCard) revalidatePath(`board/${data.boardId}`);
 
 		return updatedCard;
+	} catch (error) {
+		if (error instanceof Error) throw new Error(error.message);
+	}
+};
+
+export const onCopyCard = async (data: CopyCardInputs) => {
+	try {
+		const copiedCard = await copyCard(data);
+
+		if (copiedCard) revalidatePath(`board/${data.boardId}`);
+
+		return copiedCard;
+	} catch (error) {
+		if (error instanceof Error) throw new Error(error.message);
+	}
+};
+
+export const onDeleteCard = async (data: DeleteCardInputs) => {
+	try {
+		const deletedCard = await deleteCard(data);
+
+		if (deletedCard) revalidatePath(`board/${data.boardId}`);
+
+		return deletedCard;
 	} catch (error) {
 		if (error instanceof Error) throw new Error(error.message);
 	}

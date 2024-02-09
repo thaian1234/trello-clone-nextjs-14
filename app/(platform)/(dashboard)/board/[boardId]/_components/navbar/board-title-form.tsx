@@ -59,6 +59,7 @@ export function BoardTitleForm({ board }: BoardTitleFormProps) {
 
 	const onBlur = () => {
 		formRef.current?.requestSubmit();
+		disabledEditing();
 	};
 
 	if (isEditing) {

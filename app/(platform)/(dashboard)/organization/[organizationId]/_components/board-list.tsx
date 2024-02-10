@@ -4,9 +4,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { HelpCircle, User2 } from "lucide-react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BoardItem } from "./board-item";
+import { getAvailableCount } from "@/lib/org-limit";
+import { MAX_FREE_BOARDS } from "@/constant/boards";
+import { checkSubcription } from "@/lib/subscription";
 
 export async function BoardList() {
 	const { orgId } = auth();
@@ -21,6 +23,9 @@ export async function BoardList() {
 			createdAt: "desc",
 		},
 	});
+
+	const availableCount = await getAvailableCount();
+	const isPro = await checkSubcription();
 
 	return (
 		<div className="space-y-4">
@@ -38,11 +43,17 @@ export async function BoardList() {
 						className="aspect-video relative size-full rounded-sm bg-muted flex flex-col gap-y-1 items-center justify-center hover:opacity-75 transition"
 					>
 						<p className="text-sm">Create new board</p>
-						<span className="text-xs">5 reamining</span>
+						<span className="text-xs">
+							{isPro
+								? "Unlimited"
+								: `${
+										MAX_FREE_BOARDS - availableCount
+								  } reamining`}
+						</span>
 						<Hint
 							sideOffset={40}
 							description={`
-						Free Workpsaces can have up to 5 open boards. for unlimited boards upgrade this workspace.
+						Free Workpsaces can have up to ${MAX_FREE_BOARDS} open boards. for unlimited boards upgrade this workspace.
 					`}
 						>
 							<HelpCircle className="absolute bottom-2 right-2 size-[14px]" />

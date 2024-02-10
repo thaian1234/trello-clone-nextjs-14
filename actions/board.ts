@@ -11,7 +11,7 @@ export const onCreateBoard = async (title: string, image: string) => {
 
 		return board;
 	} catch (error) {
-		throw new Error("Interal Error");
+		if (error instanceof Error) throw new Error(error.message);
 	}
 };
 
@@ -23,7 +23,7 @@ export const onUpdateBoard = async (id: string, title: string) => {
 
 		return updatedBoard;
 	} catch (error) {
-		throw new Error("Interal Error");
+		if (error instanceof Error) throw new Error(error.message);
 	}
 };
 
@@ -35,6 +35,6 @@ export const onDeleteBoard = async (id: string) => {
 
 		return deletedBoard;
 	} catch (error) {
-		throw new Error("Interal Error");
+		if (error instanceof Error) throw new Error(error.message);
 	}
 };

@@ -25,8 +25,8 @@ export function Actions({ id }: ActionsProps) {
 		startTransition(() => {
 			onDeleteBoard(id)
 				.then((data) => {
-					toast.success(`Board "${data.title}" deleted`);
-					router.replace(`/organization/${data.orgId}`);
+					toast.success(`Board "${data?.title}" deleted`);
+					router.replace(`/organization/${data?.orgId}`);
 				})
 				.catch(() => {
 					toast.error("Something went wrong");

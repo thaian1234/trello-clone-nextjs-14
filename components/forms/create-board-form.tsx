@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { PickerForm } from "./picker-form";
 import { useRouter } from "next/navigation";
 import { Loader } from "../ui/loader";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 interface CreateBoardFormProps {
 	closeRef?: RefObject<HTMLButtonElement>;
@@ -38,6 +39,7 @@ type formInput = z.infer<typeof formSchema>;
 export function CreateBoardForm({ closeRef }: CreateBoardFormProps) {
 	const [isPending, startTransition] = useTransition();
 	const router = useRouter();
+	const proModal = useProModal((state) => state);
 
 	const form = useForm<formInput>({
 		resolver: zodResolver(formSchema),
@@ -57,10 +59,11 @@ export function CreateBoardForm({ closeRef }: CreateBoardFormProps) {
 				.then((data) => {
 					toast.success("Board created");
 					closeRef?.current?.click();
-					router.push(`/board/${data.id}`);
+					router.push(`/board/${data?.id}`);
 				})
-				.catch(() => {
-					toast.error("Something went wrong");
+				.catch((error: Error) => {
+					toast.error(error.message);
+					proModal.onOpen();
 				});
 		});
 	}

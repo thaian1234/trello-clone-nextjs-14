@@ -2,11 +2,29 @@ import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { createAuditLog } from "./audit-log-service";
 import { ACTION, ENTITY_TYPE } from "@prisma/client";
+import {
+	decreaseAvailableCount,
+	hasAvailableCount,
+	incrementAvailableCount,
+} from "./org-limit";
+import { checkSubcription } from "./subscription";
 
 export const createBoard = async (title: string, image: string) => {
 	const { userId, orgId } = auth();
 
 	if (!userId || !orgId) throw new Error("Unauthorized");
+
+	// const canCreate = await hasAvailableCount();
+	// const isPro = await checkSubcription();
+	const [canCreate, isPro] = await Promise.all([
+		hasAvailableCount(),
+		checkSubcription(),
+	]);
+
+	if (!canCreate && !isPro)
+		throw new Error(
+			"You have reached your limit of free boards. Please update to create more board."
+		);
 
 	const [imageId, imageThumbUrl, imageFullUrl, imageLinkHTML, imageUsername] =
 		image.split("|");
@@ -34,6 +52,8 @@ export const createBoard = async (title: string, image: string) => {
 	});
 
 	if (!board) throw new Error("Interal Error");
+
+	if (!isPro) await incrementAvailableCount();
 
 	const auditLog = await createAuditLog({
 		entityId: board.id,
@@ -88,6 +108,8 @@ export const deleteBoard = async (id: string) => {
 
 	if (!deletedBoard) throw new Error("Failed to delete");
 
+	const isPro = await checkSubcription();
+
 	const auditLog = await createAuditLog({
 		entityId: deletedBoard.id,
 		entityTitle: deletedBoard.title,
@@ -96,6 +118,8 @@ export const deleteBoard = async (id: string) => {
 	});
 
 	if (!auditLog) throw new Error("Failed to audit action");
+
+	if (!isPro) await decreaseAvailableCount();
 
 	return deletedBoard;
 };
